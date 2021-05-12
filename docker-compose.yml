@@ -302,10 +302,10 @@ services:
     container_name: superset
     ports:
       - 8088:8080    
-    deploy:
-      resources:
-        limits:
-          memory: 1g          
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 1g          
 
 
   # Druid          
