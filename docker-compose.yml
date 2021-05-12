@@ -170,7 +170,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./data/presto/druid.properties:etc/catalog/druid.properties
+      - ./data/presto/druid.properties:./etc/catalog/druid.properties
     depends_on:
       - hive-server  
     deploy:
