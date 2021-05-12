@@ -337,7 +337,7 @@ services:
       - druid-zookeeper
       - druid-postgres
     ports:
-      - "8082:8081"
+      - "8081:8081"
     command:
       - coordinator
     env_file:
@@ -353,7 +353,7 @@ services:
       - druid-postgres
       - druid-coordinator
     ports:
-      - "8083:8082"
+      - "8082:8082"
     command:
       - broker
     env_file:
@@ -370,7 +370,7 @@ services:
       - druid-postgres
       - druid-coordinator
     ports:
-      - "8084:8083"
+      - "8083:8083"
     command:
       - historical
     env_file:
