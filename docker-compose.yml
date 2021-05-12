@@ -337,7 +337,7 @@ services:
       - druid-zookeeper
       - druid-postgres
     ports:
-      - "8081:8082"
+      - "8082:8081"
     command:
       - coordinator
     env_file:
