@@ -1,4 +1,4 @@
-version: '3' 
+version: "2.2"
 
 volumes:
   metadata_data: {}
@@ -9,7 +9,6 @@ volumes:
   router_var: {}
 
 services:
-
   namenode:
     image: fjardim/namenode_sqoop
     container_name: namenode
@@ -102,20 +101,20 @@ services:
     container_name: hue
     dns: 8.8.8.8
     ports:
-    - "8888:8888"
+    - "8890:8888"
     volumes:
       - ./data/hue/hue-overrides.ini:/usr/share/hue/desktop/conf/z-hue.ini
     depends_on:
-      - "database"
+      - "mysql"
     deploy:
       resources:
         limits:
           memory: 500m
   
-  database:
+  mysql:
     image: fjardim/mysql
-    container_name: database
-    hostname: database
+    container_name: mysql
+    hostname: mysql
     ports:
         - "33061:3306"
     deploy:
@@ -133,18 +132,18 @@ services:
         MYSQL_USER: root
         MYSQL_PASSWORD: secret
 
-  zookeeper:
-    image: fjardim/zookeeper
-    container_name: zookeeper
-    hostname: zookeeper
-    ports:
-      - "2181:2181"
-    volumes:
-      - ./data/zookeeper:/opt/zookeeper-3.4.6/data
-    deploy:
-      resources:
-        limits:
-          memory: 500m
+  # zookeeper:
+  #   image: fjardim/zookeeper
+  #   container_name: zookeeper
+  #   hostname: zookeeper
+  #   ports:
+  #     - "2181:2181"
+  #   volumes:
+  #     - ./data/zookeeper:/opt/zookeeper-3.4.6/data
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 500m
 
   kafka:
     image: fjardim/kafka
@@ -310,8 +309,8 @@ services:
 
 
   # Druid          
-  druid-postgres:
-    container_name: druid-postgres
+  postgres:
+    container_name: postgres
     image: postgres:latest
     volumes:
       - metadata_data:/var/lib/postgresql/data
@@ -321,21 +320,29 @@ services:
       - POSTGRES_DB=druid
 
   # Need 3.5 or later for container nodes
-  druid-zookeeper:
-    container_name: druid-zookeeper
+  zookeeper:
+    container_name: zookeeper
     image: zookeeper:3.5
     environment:
       - ZOO_MY_ID=1
+    ports:
+      - "2181:2181"
+    volumes:
+      - ./data/zookeeper:/opt/zookeeper-3.5/data
+    deploy:
+      resources:
+        limits:
+          memory: 500m
 
   druid-coordinator:
     image: apache/druid:0.20.2
     container_name: druid-coordinator
     volumes:
-      - ./druid/storage:/opt/data
+      - ./data/druid/storage:/opt/data
       - coordinator_var:/opt/druid/var
     depends_on: 
-      - druid-zookeeper
-      - druid-postgres
+      - zookeeper
+      - postgres
     ports:
       - "8081:8081"
     command:
@@ -349,8 +356,8 @@ services:
     volumes:
       - broker_var:/opt/druid/var
     depends_on: 
-      - druid-zookeeper
-      - druid-postgres
+      - zookeeper
+      - postgres
       - druid-coordinator
     ports:
       - "8082:8082"
@@ -363,11 +370,11 @@ services:
     image: apache/druid:0.20.2
     container_name: druid-historical
     volumes:
-      - ./druid/storage:/opt/data
+      - ./data/druid/storage:/opt/data
       - historical_var:/opt/druid/var
     depends_on: 
-      - druid-zookeeper
-      - druid-postgres
+      - zookeeper
+      - postgres
       - druid-coordinator
     ports:
       - "8083:8083"
@@ -380,11 +387,11 @@ services:
     image: apache/druid:0.20.2
     container_name: druid-middlemanager
     volumes:
-      - ./druid/storage:/opt/data
+      - ./data/druid/storage:/opt/data
       - middle_var:/opt/druid/var
     depends_on: 
-      - druid-zookeeper
-      - druid-postgres
+      - zookeeper
+      - postgres
       - druid-coordinator
     ports:
       - "8091:8091"
@@ -399,11 +406,11 @@ services:
     volumes:
       - router_var:/opt/druid/var
     depends_on:
-      - druid-zookeeper
-      - druid-postgres
+      - zookeeper
+      - postgres
       - druid-coordinator
     ports:
-      - "8890:8888"
+      - "8888:8888"
     command:
       - router
     env_file:
