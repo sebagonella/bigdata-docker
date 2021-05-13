@@ -177,6 +177,7 @@ services:
       - hive-server
       - druid-coordinator
       - druid-broker
+      - druid-router
       # - mongo
     deploy:
       resources:
