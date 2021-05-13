@@ -178,6 +178,8 @@ services:
       - druid-coordinator
       - druid-broker
       - druid-router
+      - druid-middlemanager
+      - druid-historical
       # - mongo
     deploy:
       resources:
