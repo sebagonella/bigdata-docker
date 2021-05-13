@@ -170,7 +170,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./data/presto/hive.properties:/opt/presto-server/etc/catalog/druid.properties
+      - ./data/presto/hive.properties:/opt/presto-server/etc/catalog/hive.properties
       - ./data/presto/druid.properties:/opt/presto-server/etc/catalog/druid.properties
       - ./data/presto/mongodb.properties:/opt/presto-server/etc/catalog/mongodb.properties
     depends_on:
