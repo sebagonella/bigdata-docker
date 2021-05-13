@@ -164,15 +164,20 @@ services:
           memory: 500m
 
   presto-coordinator:
-    image: fjardim/prestodb
+    image: ahanaio/prestodb-sandbox:0.252
     container_name: presto
     hostname: presto
     ports:
       - "8080:8080"
-    # volumes:
-    #   - ./data/presto/druid.properties:/opt/presto-server-0.181/etc/catalog/druid.properties
+    volumes:
+      - ./data/presto/hive.properties:/opt/presto-server/etc/catalog/druid.properties
+      - ./data/presto/druid.properties:/opt/presto-server/etc/catalog/druid.properties
+      - ./data/presto/mongodb.properties:/opt/presto-server/etc/catalog/mongodb.properties
     depends_on:
-      - hive-server  
+      - hive-server
+      - druid-coordinator
+      - druid-broker
+      # - mongo
     deploy:
       resources:
         limits:
