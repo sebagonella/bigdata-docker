@@ -164,7 +164,7 @@ services:
           memory: 500m
 
   presto-coordinator:
-    image: ahanaio/prestodb-sandbox:0.249.1
+    image: ahanaio/prestodb-sandbox:0.251.1
     container_name: presto
     hostname: presto
     ports:
@@ -266,6 +266,17 @@ services:
         limits:
           memory: 500m
  
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    hostname: grafana
+    ports:
+      - 3001:3000
+    deploy:
+      resources:
+        limits:
+          memory: 500m
+
   nifi:
     image: fjardim/nifi
     container_name: nifi
