@@ -164,7 +164,7 @@ services:
           memory: 500m
 
   presto-coordinator:
-    image: ahanaio/prestodb-sandbox:0.251
+    image: ahanaio/prestodb-sandbox:0.249.1
     container_name: presto
     hostname: presto
     ports:
