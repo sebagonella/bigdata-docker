@@ -9,38 +9,65 @@ volumes:
   router_var: {}
 
 services:
+  # namenode:
+  #   image: fjardim/namenode_sqoop
+  #   container_name: namenode
+  #   hostname: namenode
+  #   volumes:
+  #     - ./data/hdfs/namenode:/hadoop/dfs/name
+  #   environment:
+  #     - CLUSTER_NAME=test
+  #   env_file:
+  #     - ./data/hadoop/hadoop-hive.env
+  #   ports:
+  #     - "50070:50070"
   namenode:
-    image: fjardim/namenode_sqoop
+    image: sebagonella/hadoop-namenode:3.2.1
     container_name: namenode
     hostname: namenode
+    restart: always
+    ports:
+      - 9870:9870
+      - 9000:9000
     volumes:
       - ./data/hdfs/namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test
     env_file:
-      - ./data/hadoop/hadoop-hive.env
-    ports:
-      - "50070:50070"
+      - ./hadoop.env
     deploy:
       resources:
         limits:
           memory: 500m
   
+  # datanode:
+  #   image: fjardim/datanode
+  #   container_name: datanode
+  #   hostname: datanode
+  #   volumes:
+  #     - ./data/hdfs/datanode:/hadoop/dfs/data
+  #     #- ./data/hadoop/bank:/bank
+  #   env_file:
+  #     - ./data/hadoop/hadoop-hive.env
+  #   environment:
+  #     SERVICE_PRECONDITION: "namenode:50070"
+  #   depends_on:
+  #     - namenode
   datanode:
-    image: fjardim/datanode
+    image: sebagonella/hadoop-datanode:3.2.1
     container_name: datanode
-    hostname: datanode
+    restart: always
     volumes:
       - ./data/hdfs/datanode:/hadoop/dfs/data
-      #- ./data/hadoop/bank:/bank
-    env_file:
-      - ./data/hadoop/hadoop-hive.env
     environment:
-      SERVICE_PRECONDITION: "namenode:50070"
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./hadoop.env
+      - ./data/hadoop/hadoop-hive.env
     depends_on:
       - namenode
     ports:
-      - "50075:50075"
+      - "9864:9864"
     deploy:
       resources:
         limits:
@@ -72,7 +99,7 @@ services:
       - ./data/hadoop/hadoop-hive.env
     command: /opt/hive/bin/hive --service metastore
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432"
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 hive-metastore-postgresql:5432"
     ports:
       - "9083:9083"
     depends_on:
@@ -164,7 +191,7 @@ services:
           memory: 500m
 
   presto-coordinator:
-    image: ahanaio/prestodb-sandbox:0.251
+    image: ahanaio/prestodb-sandbox:0.252
     container_name: presto
     hostname: presto
     ports:
@@ -191,7 +218,7 @@ services:
     env_file:
       - ./data/hbase/hbase-standalone.env
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 zookeeper:2181"
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 zookeeper:2181"
     ports:
       - 16010:16010
     depends_on:

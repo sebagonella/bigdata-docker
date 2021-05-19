@@ -30,7 +30,7 @@
 <property><name>hbase.regionserver.port</name><value>16020</value></property>
 <property><name>hbase.regionserver.info.port</name><value>16030</value></property>
 <property><name>hbase.master.hostname</name><value>hbase-master</value></property>
-<property><name>hbase.rootdir</name><value>hdfs://namenode:8020/hbase</value></property>
+<property><name>hbase.rootdir</name><value>hdfs://namenode:9000/hbase</value></property>
 <property><name>hbase.master.info.port</name><value>16010</value></property>
 <property><name>DIR</name><value>/etc/hbase</value></property>
 <property><name>hbase.cluster.distributed</name><value>true</value></property>
@@ -40,5 +40,5 @@
 <property><name>hbase.regionserver.port</name><value>16020</value></property>
 <property><name>hbase.regionserver.info.port</name><value>16030</value></property>
 <property><name>hbase.master.hostname</name><value>hbase-master</value></property>
-<property><name>hbase.rootdir</name><value>hdfs://namenode:8020/hbase</value></property>
+<property><name>hbase.rootdir</name><value>hdfs://namenode:9000/hbase</value></property>
 </configuration>
