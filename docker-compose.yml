@@ -1,6 +1,9 @@
 version: "3"
 
 volumes:
+  hadoop_namenode: {}
+  hadoop_datanode: {}
+  hadoop_historyserver: {}
   metadata_data: {}
   middle_var: {}
   historical_var: {}
@@ -83,10 +86,10 @@ services:
     env_file:
       - ./data/hadoop/hadoop-hive.env
       - ./data/hadoop/hadoop.env
-      deploy:
-        resources:
-          limits:
-            memory: 500m
+    deploy:
+      resources:
+        limits:
+          memory: 500m
 
   nodemanager1:
     image: sebagonella/hadoop-nodemanager:3.2.1
