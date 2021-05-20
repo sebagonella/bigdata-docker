@@ -74,6 +74,50 @@ services:
         limits:
           memory: 500m
   
+  resourcemanager:
+    image: sebagonella/hadoop-resourcemanager:3.2.1
+    container_name: resourcemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
+    env_file:
+      - ./data/hadoop/hadoop.env
+      - ./data/hadoop/hadoop-hive.env
+      deploy:
+        resources:
+          limits:
+            memory: 500m
+
+  nodemanager1:
+    image: sebagonella/hadoop-nodemanager:3.2.1
+    container_name: nodemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    env_file:
+      - ./data/hadoop/hadoop.env
+      - ./data/hadoop/hadoop-hive.env
+    deploy:
+      resources:
+        limits:
+          memory: 500m
+
+  historyserver:
+    image: sebagonella/hadoop-historyserver:3.2.1
+    container_name: historyserver
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    volumes:
+      - hadoop_historyserver:/hadoop/yarn/timeline
+    env_file:
+      - ./data/hadoop/hadoop.env
+      - ./data/hadoop/hadoop-hive.env
+    deploy:
+      resources:
+        limits:
+          memory: 500m
+
   hive-server:
     image: fjardim/hive
     container_name: hive-server
