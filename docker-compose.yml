@@ -269,7 +269,7 @@ services:
     environment: 
       ZK_HOSTS: zookeeper:2181
     ports:
-      - 9000:9000
+      - 9001:9000
     depends_on:
       - kafka
     deploy:
