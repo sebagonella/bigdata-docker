@@ -429,7 +429,7 @@ services:
           memory: 500m
 
   druid-coordinator:
-    image: apache/druid:0.20.2
+    image: apache/druid:0.21.0
     container_name: druid-coordinator
     volumes:
       - ./data/druid/storage:/opt/data
@@ -445,7 +445,7 @@ services:
       - data/druid/environment
 
   druid-broker:
-    image: apache/druid:0.20.2
+    image: apache/druid:0.21.0
     container_name: druid-broker
     volumes:
       - broker_var:/opt/druid/var
@@ -461,7 +461,7 @@ services:
       - data/druid/environment
 
   druid-historical:
-    image: apache/druid:0.20.2
+    image: apache/druid:0.21.0
     container_name: druid-historical
     volumes:
       - ./data/druid/storage:/opt/data
@@ -478,7 +478,7 @@ services:
       - data/druid/environment
 
   druid-middlemanager:
-    image: apache/druid:0.20.2
+    image: apache/druid:0.21.0
     container_name: druid-middlemanager
     volumes:
       - ./data/druid/storage:/opt/data
@@ -495,7 +495,7 @@ services:
       - data/druid/environment
 
   druid-router:
-    image: apache/druid:0.20.2
+    image: apache/druid:0.21.0
     container_name: druid-router
     volumes:
       - router_var:/opt/druid/var
