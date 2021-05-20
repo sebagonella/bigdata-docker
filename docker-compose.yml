@@ -34,7 +34,8 @@ services:
     environment:
       - CLUSTER_NAME=test
     env_file:
-      - ./hadoop.env
+      - ./data/hadoop/hadoop-hive.env
+      - ./data/hadoop/hadoop.env
     deploy:
       resources:
         limits:
