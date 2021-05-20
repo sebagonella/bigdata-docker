@@ -1,9 +1,9 @@
 version: "3"
 
 volumes:
-  hadoop_namenode: {}
-  hadoop_datanode: {}
-  hadoop_historyserver: {}
+  # hadoop_namenode: {}
+  # hadoop_datanode: {}
+  # hadoop_historyserver: {}
   metadata_data: {}
   middle_var: {}
   historical_var: {}
