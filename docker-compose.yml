@@ -26,7 +26,7 @@ services:
   #     - "50070:50070"
   namenode:
     image: sebagonella/hadoop-namenode:3.2.1
-    container_name: namenode
+    container_name: hadoop-namenode
     hostname: namenode
     restart: always
     ports:
@@ -59,7 +59,8 @@ services:
   #     - namenode
   datanode:
     image: sebagonella/hadoop-datanode:3.2.1
-    container_name: datanode
+    container_name: hadoop-datanode
+    hostname: datanode
     restart: always
     volumes:
       - ./data/hadoop/hdfs/datanode:/hadoop/dfs/data
@@ -79,7 +80,8 @@ services:
   
   resourcemanager:
     image: sebagonella/hadoop-resourcemanager:3.2.1
-    container_name: resourcemanager
+    container_name: hadoop-resourcemanager
+    hostname: resourcemanager
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
@@ -93,7 +95,8 @@ services:
 
   nodemanager1:
     image: sebagonella/hadoop-nodemanager:3.2.1
-    container_name: nodemanager
+    container_name: hadoop-nodemanager
+    hostname: nodemanager
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
@@ -107,7 +110,8 @@ services:
 
   historyserver:
     image: sebagonella/hadoop-historyserver:3.2.1
-    container_name: historyserver
+    container_name: hadoop-historyserver
+    hostname: historyserver
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
