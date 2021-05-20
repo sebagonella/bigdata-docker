@@ -63,8 +63,8 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
-      - ./data/hadoop/hadoop.env
       - ./data/hadoop/hadoop-hive.env
+      - ./data/hadoop/hadoop.env
     depends_on:
       - namenode
     ports:
@@ -81,8 +81,8 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
     env_file:
-      - ./data/hadoop/hadoop.env
       - ./data/hadoop/hadoop-hive.env
+      - ./data/hadoop/hadoop.env
       deploy:
         resources:
           limits:
@@ -95,8 +95,8 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     env_file:
-      - ./data/hadoop/hadoop.env
       - ./data/hadoop/hadoop-hive.env
+      - ./data/hadoop/hadoop.env
     deploy:
       resources:
         limits:
@@ -111,8 +111,8 @@ services:
     volumes:
       - hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
-      - ./data/hadoop/hadoop.env
       - ./data/hadoop/hadoop-hive.env
+      - ./data/hadoop/hadoop.env
     deploy:
       resources:
         limits:
