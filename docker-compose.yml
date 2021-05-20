@@ -112,7 +112,7 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     volumes:
-      - hadoop_historyserver:/hadoop/yarn/timeline
+      - ./data/hadoop/yarn/historyserver:/hadoop/yarn/timeline
     env_file:
       - ./data/hadoop/hadoop-hive.env
       - ./data/hadoop/hadoop.env
