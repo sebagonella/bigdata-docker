@@ -88,6 +88,8 @@ services:
     env_file:
       - ./data/hadoop/hadoop-hive.env
       - ./data/hadoop/hadoop.env
+    ports:
+      - "8089:8088"
     deploy:
       resources:
         limits:
@@ -120,6 +122,8 @@ services:
     env_file:
       - ./data/hadoop/hadoop-hive.env
       - ./data/hadoop/hadoop.env
+    ports:
+      - "19888:19888"
     deploy:
       resources:
         limits:
