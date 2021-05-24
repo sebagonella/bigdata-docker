@@ -376,7 +376,7 @@ services:
           memory: 500m
 
   jupyter-spark:
-    image: fjardim/jupyter-spark
+    image: jupyter/all-spark-notebook:spark-3.1.1
     hostname: jupyter-spark
     container_name: jupyter-spark
     command: notebook
@@ -391,7 +391,7 @@ services:
     volumes:
        - ./data/notebooks:/mnt/notebooks/
     environment:
-       SPARK_MASTER: local[*]
+       SPARK_MASTER: local[2]
        JUPYTER_PORT: 8889
     deploy:
       resources:
@@ -408,7 +408,6 @@ services:
     #   resources:
     #     limits:
     #       memory: 1g          
-
 
   # Druid          
   postgres:
