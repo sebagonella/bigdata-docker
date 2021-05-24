@@ -348,7 +348,7 @@ services:
           memory: 500m
  
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:7.5.7
     container_name: grafana
     hostname: grafana
     ports:
@@ -393,13 +393,13 @@ services:
     environment:
        SPARK_MASTER: local[2]
        JUPYTER_PORT: 8889
-    deploy:
-      resources:
-        limits:
-          memory: 1g
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 1g
 
   superset:
-    image: apache/superset
+    image: apache/superset:1.1.0
     hostname: superset
     container_name: superset
     ports:
