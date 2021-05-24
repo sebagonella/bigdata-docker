@@ -388,8 +388,8 @@ services:
       - 4041:4041
       - 4042:4042
       - 4043:4043
-    volumes:
-       - ./data/notebooks:/mnt/notebooks/
+    # volumes:
+    #    - ./data/notebooks:/mnt/notebooks/
     environment:
        SPARK_MASTER: local[2]
        JUPYTER_PORT: 8889
