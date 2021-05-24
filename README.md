@@ -24,9 +24,11 @@ Ambiente para estudo dos principais frameworks big data em docker.
 
 ## CONFIGURANDO O AMBIENTE
 
-### Superset
+Após os containers estiverem rodando, execute os *comandos* mais abaixo para criar a conta admin ou execute o *make* para fazê-lo automaticamente. Se for executar o make, atualize as variáveis de ambiente no arquivo Makefile.
 
-Após o container do superset estiver rodando, execute o comando abaixo para criar a conta admin:
+       $ make
+
+### Superset
 
       $ docker exec -it superset superset fab create-admin \
                      --username admin \
@@ -49,14 +51,17 @@ Configure as roles:
 
 Superset pronto.
 
+
 ### Grafana
 
 Após o grafana estar funcionando, é necessário a configuração do plugin para conexão com o Druid.
 
 Entrar no container:
+
        $ docker exec -it grafana bash
 
 Instalar o plugin:
+
        $ grafana-cli --pluginUrl https://github.com/grafadruid/druid-grafana/releases/download/v1.1.0/grafadruid-druid-datasource-1.1.0.zip plugins install grafadruid-druid-datasource
 
 **grafadruid/druid-grafana**
@@ -95,7 +100,7 @@ https://github.com/grafadruid/druid-grafana
 * Hbase - http://localhost:16010/master-status
 * Druid - http://localhost:8888/
 * Mongo Express - http://localhost:8084
-* Kafka Manager - http://localhost:9000
+* Kafka Manager - http://localhost:9001
 * Nifi - http://localhost:9090
 * Jupyter - http://localhost:8889
 * Spark - http://localhost:4040
@@ -157,24 +162,24 @@ https://github.com/grafadruid/druid-grafana
 
 ## Versões dos componentes
 
-* Hadoop - 
-* Sqoop - 
-* Hive - 
-* Presto - 
-* Hbase -
-* Druid -  
-* MongoDB - 
-* Mongo Express - 
-* Kafka - 
-* Kafka Manager - 
-* Nifi - 
-* Jupyter - 
-* Spark - 
-* Hue - 
-* Metabase - 
-* Superset - 
-* Grafana - 
-
+* Hadoop - 3.2.1
+* Sqoop - Não disponível ainda
+* Oozie - Não disponível ainda
+* Hive - 2.3.2
+* Presto - 0.252
+* Hbase - 1.2.6
+* Druid -  0.21.0
+* MongoDB - 4.2.3
+* Mongo Express - 0.54.0
+* Kafka - 2.3.0
+* Kafka Manager - 2.0.0.2
+* Nifi - 1.11.3
+* Jupyter Notebook - 6.3.0
+* Spark - 3.1.1
+* Hue - 4.9.0
+* Metabase - 0.34.3
+* Superset - 1.1.0
+* Grafana - 7.5.7
 
 ## Documentação Oficial
 
