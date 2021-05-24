@@ -379,20 +379,18 @@ services:
     image: jupyter/all-spark-notebook:spark-3.1.1
     hostname: jupyter-spark
     container_name: jupyter-spark
-    command: notebook
     env_file:
       - ./data/jupyter/jupyter.env
     ports:
-      - 8889:8889
+      - 8889:8888
       - 4040:4040
       - 4041:4041
       - 4042:4042
       - 4043:4043
-    # volumes:
-    #    - ./data/notebooks:/mnt/notebooks/
+    volumes:
+       - ./data/notebooks:/mnt/notebooks/
     environment:
        SPARK_MASTER: local[2]
-       JUPYTER_PORT: 8889
     # deploy:
     #   resources:
     #     limits:
