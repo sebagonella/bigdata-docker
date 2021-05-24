@@ -1,6 +1,9 @@
 version: "3"
 
 volumes:
+  # hadoop_namenode: {}
+  # hadoop_datanode: {}
+  # hadoop_historyserver: {}
   metadata_data: {}
   middle_var: {}
   historical_var: {}
@@ -9,43 +12,123 @@ volumes:
   router_var: {}
 
 services:
+  # namenode:
+  #   image: fjardim/namenode_sqoop
+  #   container_name: namenode
+  #   hostname: namenode
+  #   volumes:
+  #     - ./data/hdfs/namenode:/hadoop/dfs/name
+  #   environment:
+  #     - CLUSTER_NAME=test
+  #   env_file:
+  #     - ./data/hadoop/hadoop-hive.env
+  #   ports:
+  #     - "50070:50070"
   namenode:
-    image: fjardim/namenode_sqoop
-    container_name: namenode
+    image: sebagonella/hadoop-namenode:3.2.1
+    container_name: hadoop-namenode
     hostname: namenode
+    restart: always
+    ports:
+      - 9870:9870
+      - 9000:9000
     volumes:
-      - ./data/hdfs/namenode:/hadoop/dfs/name
+      - ./data/hadoop/hdfs/namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test
     env_file:
       - ./data/hadoop/hadoop-hive.env
-    ports:
-      - "50070:50070"
+      - ./data/hadoop/hadoop.env
     deploy:
       resources:
         limits:
           memory: 500m
   
+  # datanode:
+  #   image: fjardim/datanode
+  #   container_name: datanode
+  #   hostname: datanode
+  #   volumes:
+  #     - ./data/hdfs/datanode:/hadoop/dfs/data
+  #     #- ./data/hadoop/bank:/bank
+  #   env_file:
+  #     - ./data/hadoop/hadoop-hive.env
+  #   environment:
+  #     SERVICE_PRECONDITION: "namenode:50070"
+  #   depends_on:
+  #     - namenode
   datanode:
-    image: fjardim/datanode
-    container_name: datanode
+    image: sebagonella/hadoop-datanode:3.2.1
+    container_name: hadoop-datanode
     hostname: datanode
+    restart: always
     volumes:
-      - ./data/hdfs/datanode:/hadoop/dfs/data
-      #- ./data/hadoop/bank:/bank
+      - ./data/hadoop/hdfs/datanode:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./data/hadoop/hadoop-hive.env
-    environment:
-      SERVICE_PRECONDITION: "namenode:50070"
+      - ./data/hadoop/hadoop.env
     depends_on:
       - namenode
     ports:
-      - "50075:50075"
+      - "9864:9864"
     deploy:
       resources:
         limits:
           memory: 500m
   
+  resourcemanager:
+    image: sebagonella/hadoop-resourcemanager:3.2.1
+    container_name: hadoop-resourcemanager
+    hostname: resourcemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
+    env_file:
+      - ./data/hadoop/hadoop-hive.env
+      - ./data/hadoop/hadoop.env
+    ports:
+      - "8089:8088"
+    deploy:
+      resources:
+        limits:
+          memory: 500m
+
+  nodemanager1:
+    image: sebagonella/hadoop-nodemanager:3.2.1
+    container_name: hadoop-nodemanager
+    hostname: nodemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    env_file:
+      - ./data/hadoop/hadoop-hive.env
+      - ./data/hadoop/hadoop.env
+    deploy:
+      resources:
+        limits:
+          memory: 500m
+
+  historyserver:
+    image: sebagonella/hadoop-historyserver:3.2.1
+    container_name: hadoop-historyserver
+    hostname: historyserver
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    volumes:
+      - ./data/hadoop/yarn/historyserver:/hadoop/yarn/timeline
+    env_file:
+      - ./data/hadoop/hadoop-hive.env
+      - ./data/hadoop/hadoop.env
+    ports:
+      - "8188:8188"
+    deploy:
+      resources:
+        limits:
+          memory: 500m
+
   hive-server:
     image: fjardim/hive
     container_name: hive-server
@@ -66,13 +149,13 @@ services:
   
   hive-metastore:
     image: fjardim/hive
-    container_name: hive_metastore
-    hostname: hive_metastore
+    container_name: hive-metastore
+    hostname: hive-metastore
     env_file:
       - ./data/hadoop/hadoop-hive.env
     command: /opt/hive/bin/hive --service metastore
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432"
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 hive-metastore-postgresql:5432"
     ports:
       - "9083:9083"
     depends_on:
@@ -85,7 +168,7 @@ services:
   hive-metastore-postgresql:
     image: fjardim/hive-metastore
     container_name: hive-metastore-postgresql
-    hostname: hive_metastore_postgresql
+    hostname: hive-metastore-postgresql
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
     depends_on:
@@ -164,7 +247,7 @@ services:
           memory: 500m
 
   presto-coordinator:
-    image: ahanaio/prestodb-sandbox:0.251
+    image: ahanaio/prestodb-sandbox:0.252
     container_name: presto
     hostname: presto
     ports:
@@ -191,7 +274,7 @@ services:
     env_file:
       - ./data/hbase/hbase-standalone.env
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 zookeeper:2181"
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 zookeeper:2181"
     ports:
       - 16010:16010
     depends_on:
@@ -241,7 +324,7 @@ services:
     environment: 
       ZK_HOSTS: zookeeper:2181
     ports:
-      - 9000:9000
+      - 9001:9000
     depends_on:
       - kafka
     deploy:
@@ -265,7 +348,7 @@ services:
           memory: 500m
  
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:7.5.7
     container_name: grafana
     hostname: grafana
     ports:
@@ -293,14 +376,13 @@ services:
           memory: 500m
 
   jupyter-spark:
-    image: fjardim/jupyter-spark
+    image: jupyter/all-spark-notebook:spark-3.1.1
     hostname: jupyter-spark
     container_name: jupyter-spark
-    command: notebook
     env_file:
       - ./data/jupyter/jupyter.env
     ports:
-      - 8889:8889
+      - 8889:8888
       - 4040:4040
       - 4041:4041
       - 4042:4042
@@ -308,15 +390,14 @@ services:
     volumes:
        - ./data/notebooks:/mnt/notebooks/
     environment:
-       SPARK_MASTER: local[*]
-       JUPYTER_PORT: 8889
-    deploy:
-      resources:
-        limits:
-          memory: 1g
+       SPARK_MASTER: local[2]
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 1g
 
   superset:
-    image: apache/superset
+    image: apache/superset:1.1.0
     hostname: superset
     container_name: superset
     ports:
@@ -325,7 +406,6 @@ services:
     #   resources:
     #     limits:
     #       memory: 1g          
-
 
   # Druid          
   postgres:
@@ -354,7 +434,7 @@ services:
           memory: 500m
 
   druid-coordinator:
-    image: apache/druid:0.20.2
+    image: apache/druid:0.21.0
     container_name: druid-coordinator
     volumes:
       - ./data/druid/storage:/opt/data
@@ -370,7 +450,7 @@ services:
       - data/druid/environment
 
   druid-broker:
-    image: apache/druid:0.20.2
+    image: apache/druid:0.21.0
     container_name: druid-broker
     volumes:
       - broker_var:/opt/druid/var
@@ -386,7 +466,7 @@ services:
       - data/druid/environment
 
   druid-historical:
-    image: apache/druid:0.20.2
+    image: apache/druid:0.21.0
     container_name: druid-historical
     volumes:
       - ./data/druid/storage:/opt/data
@@ -403,7 +483,7 @@ services:
       - data/druid/environment
 
   druid-middlemanager:
-    image: apache/druid:0.20.2
+    image: apache/druid:0.21.0
     container_name: druid-middlemanager
     volumes:
       - ./data/druid/storage:/opt/data
@@ -420,7 +500,7 @@ services:
       - data/druid/environment
 
   druid-router:
-    image: apache/druid:0.20.2
+    image: apache/druid:0.21.0
     container_name: druid-router
     volumes:
       - router_var:/opt/druid/var
