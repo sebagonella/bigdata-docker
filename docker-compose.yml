@@ -401,7 +401,7 @@ services:
     hostname: superset
     container_name: superset
     ports:
-      - 8088:8088    
+      - 8088:8080    
     # deploy:
     #   resources:
     #     limits:
